@@ -5,7 +5,7 @@ Caracteristicas:
 - Utilice patron de diseño MVC
 
 
-##Captura:
+## Captura:
 
 ![](https://raw.githubusercontent.com/DaveB4r/excursiones/master/localhost_7154_.png)
 
