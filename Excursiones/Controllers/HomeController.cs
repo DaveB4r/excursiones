@@ -21,14 +21,16 @@ namespace Excursiones.Controllers
 
         public IActionResult Index()
         {
+            // capturo el mensaje despues de hacer los respectivos calculos
             string successMessage = TempData["SuccessMessage"] as string;
-
+            // guardo el mensaje en ViewBag
             ViewBag.SuccessMessage = successMessage;
             return View();
         }
         [HttpPost]
         public ActionResult Calcular(ExcursionModel oExcursion)
         {
+            // creo un diccionario de objetos con las diferentes medidas (peso y calorias) de cada elemento
             Dictionary<string, PesoCalorias> pesosCalorias = new Dictionary<string, PesoCalorias>
             {
                 {"E1", new PesoCalorias { Peso = 5, Calorias = 3} },
@@ -38,6 +40,7 @@ namespace Excursiones.Controllers
                 {"E5", new PesoCalorias { Peso = 2, Calorias = 3} }
             };
 
+            //Convierto el diccionario en una lista para despues ordenarla segun el numero de calorias de mayor a menor
             List<KeyValuePair<string, PesoCalorias>> pesosCaloriasList = pesosCalorias.ToList();
             pesosCaloriasList.Sort((a, b) => b.Value.Calorias - a.Value.Calorias);
 
@@ -47,6 +50,7 @@ namespace Excursiones.Controllers
             int caloriasAcum = 0;
             List<string> result = new List<string>();
 
+            //recorro los elementos de la lista y donde acumulo los pesos y las calorias de los elementos siempre y cuando no se pasen del peso maximo
             foreach(KeyValuePair<string, PesoCalorias> pair in pesosCaloriasList)
             {
                 int pesoActual = pair.Value.Peso;
@@ -60,8 +64,11 @@ namespace Excursiones.Controllers
                 if (caloriasAcum >= minCalorias)
                     break;
             }
+            // ordeno el resultado basado en los elementos
             result.Sort((a,b) => int.Parse(a.Substring(1)) - int.Parse(b.Substring(1)));
+            // creo un mensaje temporal
             TempData["SuccessMessage"] = $"En Este caso los elementos viables son: {string.Join(" ", result)}, ya que su peso total sería {pesoAcum} y brindan {caloriasAcum} calorías";
+            // vuelvo al inicio
             return RedirectToAction("Index");
         }
         public IActionResult Privacy()
